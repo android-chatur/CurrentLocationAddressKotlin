@@ -8,25 +8,29 @@ import android.content.pm.PackageManager
 import android.location.Address
 import android.location.Geocoder
 import android.location.Location
-import android.provider.Settings
 import android.location.LocationManager
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.Settings
+import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.example.currentlocationaddress.databinding.ActivityMainBinding
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import java.text.SimpleDateFormat
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
     private lateinit var mainBinding: ActivityMainBinding
     private lateinit var mFusedLocationClient: FusedLocationProviderClient
     private val permissionId = 2
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mainBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(mainBinding.root)
+
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         mainBinding.btnLocation.setOnClickListener {
             getLocation()
@@ -43,6 +47,15 @@ class MainActivity : AppCompatActivity() {
                         val list: List<Address> =
                             geocoder.getFromLocation(location.latitude, location.longitude, 1)
                         mainBinding.apply {
+                            val tv_date_time = findViewById<TextView>(R.id.tv_date_time)
+                            val currentDate = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(Date())
+                            val currentTime =
+                                SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(
+                                    Date()
+                                )
+
+                            tv_date_time.text= "Date & Time\n ${currentDate + currentTime}"
+                            tv_date_time.text= "Date Time\n ${currentDate} ${" "} ${currentTime}"
                             tvLatitude.text = "Latitude\n${list[0].latitude}"
                             tvLongitude.text = "Longitude\n${list[0].longitude}"
                             tvCountryName.text = "Country Name\n${list[0].countryName}"
